@@ -1,0 +1,17 @@
+.obra-formulario {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 20px;
+}
+
+.obra-formulario input {
+  flex: 1;
+  padding: 8px;
+  font-size: 16px;
+}
+
+.obra-formulario button {
+  padding: 8px 16px;
+  font-size: 16px;
+  cursor: pointer;
+}
