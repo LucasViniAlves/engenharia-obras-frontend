@@ -1,5 +1,5 @@
 export interface Obra {
-  id?: number;
+  id: number;
   nome: string;
   responsavel: string;
   dataInicio: string;
@@ -10,3 +10,5 @@ export interface Obra {
   IdentidadeCliente?: string;
   NomeCliente?: string;
 }
+
+

@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import { criarObra, atualizarObra } from "../../services/ObraService";
 import { Obra } from "../../types/Obra";
 import "bootstrap/dist/css/bootstrap.min.css";
+import { Navigate, useNavigate } from "react-router";
 
 export default function ObraFormulario({
   obraSelecionada,
@@ -11,12 +12,14 @@ export default function ObraFormulario({
   aoSalvar: () => void;
 }) {
   const [obra, setObra] = useState<Obra>({
+    id: 0,
     nome: "",
     responsavel: "",
     dataInicio: new Date().toISOString().split("T")[0],
     dataFim: "",
     custoEstimado: 0,
   });
+  const navigate = useNavigate();
 
   useEffect(() => {
     if (obraSelecionada) {
@@ -51,12 +54,17 @@ export default function ObraFormulario({
 
   const resetForm = () => {
     setObra({
+      id: 0,
       nome: "",
       responsavel: "",
       dataInicio: new Date().toISOString().split("T")[0],
       dataFim: "",
       custoEstimado: 0,
     });
+  };
+
+  const handleCancel = () => {
+    navigate("/HomePage")
   };
 
   return (
@@ -164,8 +172,9 @@ export default function ObraFormulario({
         />
       </div>
 
+
       <div className="d-flex gap-3">
-        <button type="button" className="btn btn-outline-secondary" onClick={resetForm}>
+        <button type="button" className="btn btn-outline-secondary" onClick={handleCancel}>
           Cancelar
         </button>
         <button type="submit" className="btn btn-success">
