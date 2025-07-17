@@ -29,3 +29,9 @@ export const deletarBDI = async (id) => {
   const response = await api.delete(`/BDI/${id}`);
   return response.data;
 }   
+
+// calcular BDI
+export const calcularBDI = async (id) => {
+  const response = await api.get(`/BDI/calcular/${id}`);
+  return response.data;
+}

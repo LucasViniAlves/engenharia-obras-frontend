@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { Button, Modal, Table, Form } from "react-bootstrap";
 import { toast } from "react-hot-toast";
-import { getMateriaisNaoAssociados, getMateriaisDaObra, associarMaterialAObra, removerMaterialDaObra } from "../../services/ObraService";
+import { getMateriaisNaoAssociados, getMateriaisDaObra, associarMaterialAObra, removerMaterialDaObra, atualizarQuantidadeMaterialAssociado } from "../../services/ObraService";
 import { Material } from "../../types/Material";
 import { atualizarMaterial } from "../../services/MaterialService";
 
@@ -60,7 +60,6 @@ const AbaMateriais: React.FC<AbaMateriaisProps> = ({ idObra }) => {
       toast.success("Material associado com sucesso!");
       setShowModal(false);
       setIdSelecionado(0);
-      setQuantidade("1");
       carregarMateriais();
     } catch (error) {
       toast.error("Erro ao associar material.");
@@ -80,16 +79,23 @@ const AbaMateriais: React.FC<AbaMateriaisProps> = ({ idObra }) => {
   const handleEditar = async () => {
     if (!materialEditado) return;
 
+    const quantidadeNumerica = Number(materialEditado.quantidade);
+    if (!quantidadeNumerica || quantidadeNumerica <= 0) {
+      toast.error("Quantidade deve ser maior que zero.");
+      return;
+    }
+
     try {
       await atualizarMaterial(materialEditado.id, {
-        ...materialEditado,
-        quantidade: parseInt(quantidade)
+        nome: materialEditado.nome,
+        precoUnitario: materialEditado.precoUnitario,
+        quantidade: quantidadeNumerica,
       });
-
+      console.log("Material atualizado:", materialEditado);
+      await atualizarQuantidadeMaterialAssociado(idObra, materialEditado.id, Number(materialEditado.quantidade));
       toast.success("Material atualizado com sucesso!");
       setShowModalEdicao(false);
       setMaterialEditado(null);
-      setQuantidade("1");
       carregarMateriais();
     } catch (error) {
       toast.error("Erro ao atualizar material.");

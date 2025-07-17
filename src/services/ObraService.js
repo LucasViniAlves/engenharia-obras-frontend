@@ -54,8 +54,16 @@ export const getMateriaisDaObra = async (idObra) => {
   return response.data;
 };
 
+//Atualizar material associado a uma obra
+export const atualizarQuantidadeMaterialAssociado = async (idObra, idMaterial, quantidade) => {
+  const response = await api.put(`/Obra/${idObra}/materiais/${idMaterial}`, { quantidade });
+  return response.data;
+};
+
 // pegar total do custo de uma obra
 export const getTotalCustoObra = async (idObra) => {
   const response = await api.get(`/Obra/${idObra}/total`);
   return response.data;
 };
+
+

@@ -9,6 +9,12 @@ export interface Obra {
   emailCliente?: string;
   IdentidadeCliente?: string;
   NomeCliente?: string;
+  local?: string;
+  areaTotal?: number;
+  tipoObra?: string;
+  faseAtual?: string;
+  engenheiro?: string;
+  observacoes?: string;
 }
 
 

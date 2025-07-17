@@ -48,11 +48,22 @@ const AbaDadosIniciais: React.FC<AbaDadosIniciaisProps> = ({
     onSalvar(obra);
   };
 
-  const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
+  const handleChange = (
+    e: ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>
+  ) => {
     const { name, value } = e.target;
     setObra((prev) => ({
       ...prev,
       [name]: name === "custoEstimado" ? parseFloat(value) : value,
+      [name]: name === "areaTotal" ? parseFloat(value) : value,
+      [name]: name === "dataInicio" || name === "dataFim" ? value : value,
+      [name]: name === "dataInicio" ? value : value,
+      [name]: name === "dataFim" ? value : value,
+      [name]: name === "local" ? value : value,
+      [name]: name === "tipoObra" ? value : value,
+      [name]: name === "faseAtual" ? value : value,
+      [name]: name === "engenheiro" ? value : value,
+      [name]: name === "observacoes" ? value : value,
     }));
   };
 
@@ -61,7 +72,7 @@ const AbaDadosIniciais: React.FC<AbaDadosIniciaisProps> = ({
       <h4 className="mb-3">Dados da Obra</h4>
       <Form className="p-3" onSubmit={handleSubmit}>
         <h3 className="mb-4 text-primary" style={{ fontWeight: 600 }}>
-          {idObra ? "Atualizar Obra" : "Cadastrar Nova Obra"}
+          {idObra ? "Dados Gerais" : "Cadastrar Nova Obra"}
         </h3>
 
         <Form.Group>
@@ -143,6 +154,80 @@ const AbaDadosIniciais: React.FC<AbaDadosIniciaisProps> = ({
             name="emailCliente"
             type="email"
             value={obra.emailCliente}
+            onChange={handleChange}
+          />
+        </Form.Group>
+
+        <hr />
+        <h4 className="text-primary mb-3">Dados da Obra</h4>
+
+        <Form.Group className="mb-3">
+          <Form.Label>Local da Obra</Form.Label>
+          <Form.Control
+            name="local"
+            type="text"
+            value={obra.local || ""}
+            onChange={handleChange}
+          />
+        </Form.Group>
+
+        <Form.Group className="mb-3">
+          <Form.Label>Área Total (m²)</Form.Label>
+          <Form.Control
+            name="areaTotal"
+            type="number"
+            step="0.01"
+            value={obra.areaTotal || ""}
+            onChange={handleChange}
+          />
+        </Form.Group>
+
+        <Form.Group className="mb-3">
+          <Form.Label>Tipo de Obra</Form.Label>
+          <Form.Select
+            name="tipoObra"
+            value={obra.tipoObra || ""}
+            onChange={handleChange}
+          >
+            <option value="">Selecione</option>
+            <option value="Residencial">Residencial</option>
+            <option value="Comercial">Comercial</option>
+            <option value="Industrial">Industrial</option>
+            <option value="Outros">Outros</option>
+          </Form.Select>
+        </Form.Group>
+
+        <Form.Group className="mb-3">
+          <Form.Label>Fase Atual</Form.Label>
+          <Form.Select
+            name="faseAtual"
+            value={obra.faseAtual || ""}
+            onChange={handleChange}
+          >
+            <option value="">Selecione</option>
+            <option value="Planejamento">Planejamento</option>
+            <option value="Execução">Execução</option>
+            <option value="Finalizada">Finalizada</option>
+          </Form.Select>
+        </Form.Group>
+
+        <Form.Group className="mb-3">
+          <Form.Label>Engenheiro Responsável</Form.Label>
+          <Form.Control
+            name="engenheiro"
+            type="text"
+            value={obra.engenheiro || ""}
+            onChange={handleChange}
+          />
+        </Form.Group>
+
+        <Form.Group className="mb-4">
+          <Form.Label>Observações</Form.Label>
+          <Form.Control
+            name="observacoes"
+            as="textarea"
+            rows={3}
+            value={obra.observacoes || ""}
             onChange={handleChange}
           />
         </Form.Group>
