@@ -1,7 +1,7 @@
 import React from "react";
 import { useState, useEffect } from "react";
 import { toast } from "react-hot-toast";
-import { getObraPorId } from "../../services/ObraService";
+import { getObraPorId, getTotalCustoObra } from "../../services/ObraService";
 import { Table } from "react-bootstrap";
 import { ObraTotal } from "../../types/ObraTotal";
 
@@ -33,6 +33,7 @@ const AbaCustoTotal: React.FC<AbaCustoTotalProps> = ({ idObra }) => {
       horasTrabalhadas: 0,
     },
   ]);
+  const [totalCusto, setTotalCusto] = useState<number>(0);
 
   useEffect(() => {
     pegarDadosDaObra();
@@ -41,6 +42,8 @@ const AbaCustoTotal: React.FC<AbaCustoTotalProps> = ({ idObra }) => {
   const pegarDadosDaObra = async () => {
     try {
       const obraData = await getObraPorId(idObra);
+      const totalCusto = await getTotalCustoObra(idObra);
+      setTotalCusto(totalCusto);
       setMateriais(obraData.materiais || []);
       setCustosAdicionais(obraData.custosAdicionais || []);
       setMaoDeObra(obraData.maoDeObras || []);
@@ -114,6 +117,8 @@ const AbaCustoTotal: React.FC<AbaCustoTotalProps> = ({ idObra }) => {
           ))}
         </tbody>
       </Table>
+      <h5 className="mb-3 text-end">Total Custo da Obra:</h5>
+      <h4 className="text-end">{totalCusto.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}</h4>
     </div>
   );
 };

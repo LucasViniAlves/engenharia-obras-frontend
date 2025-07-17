@@ -10,6 +10,7 @@ import AbaCustosAdicionais from "./AbaCustosAdicionais";
 import AbaBDI from "./AbaBDI";
 import AbaCustoTotal from "./AbaCustoTotal";
 import AbaDadosIniciais from "./AbaDadosIniciais";
+import "./ObraPage.css"; // Importando o CSS para aplicar o estilo
 
 export default function ObraCorpo() {
   const { id } = useParams();
@@ -38,7 +39,7 @@ export default function ObraCorpo() {
 
   return (
     <LayoutPadrao>
-      <div className="container mt-4">
+      <div className="container mt-4" style={{ minHeight: '100vh' }}>
         <h2 className="mb-4 text-primary">
           {obra?.nome ?? "Carregando..."}
         </h2>
@@ -66,9 +67,8 @@ export default function ObraCorpo() {
           ))}
         </ul>
 
-
         {/* Conteúdo da aba */}
-        <div>
+        <div className="conteudo-abas">
           {abaAtiva === "dados" && (
             <AbaDadosIniciais
               idObra={obra?.id || 0}
@@ -79,35 +79,11 @@ export default function ObraCorpo() {
               onCancelar={HandleCancelar}
             />
           )}
-          {abaAtiva === "materiais" && (
-            <AbaMateriais
-              idObra={obra?.id || 0}
-            />
-          )}
-
-          {abaAtiva === "maoDeObra" && (
-            <AbaMaoDeObra
-              idObra={obra?.id || 0}
-            />
-          )}
-
-          {abaAtiva === "custos" && (
-            <AbaCustosAdicionais
-              idObra={obra?.id || 0}
-            />
-          )}
-
-          {abaAtiva === "BDI" && (
-            <AbaBDI
-              idObra={obra?.id || 0}
-            />
-          )}
-
-          {abaAtiva === "custoTotal" && (
-            <AbaCustoTotal
-              idObra={obra?.id || 0}
-            />
-          )}
+          {abaAtiva === "materiais" && <AbaMateriais idObra={obra?.id || 0} />}
+          {abaAtiva === "maoDeObra" && <AbaMaoDeObra idObra={obra?.id || 0} />}
+          {abaAtiva === "custos" && <AbaCustosAdicionais idObra={obra?.id || 0} />}
+          {abaAtiva === "BDI" && <AbaBDI idObra={obra?.id || 0} />}
+          {abaAtiva === "custoTotal" && <AbaCustoTotal idObra={obra?.id || 0} />}
         </div>
       </div>
     </LayoutPadrao>

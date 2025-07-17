@@ -2,7 +2,7 @@ import React from 'react';
 import { useState, useEffect } from "react";
 import { toast } from "react-hot-toast";
 import { MaoDeObra } from "../../types/MaoDeObra";
-import { getTodosMaoDeObra, criarMaoDeObra, deletarMaoDeObra } from "../../services/MaoDeObraService";
+import { getTodosMaoDeObra, criarMaoDeObra, deletarMaoDeObra, atualizarMaoDeObra } from "../../services/MaoDeObraService";
 import { Button, Form, Modal, Table } from 'react-bootstrap';
 
 interface AbaMaoDeObraProps {
@@ -13,10 +13,12 @@ const AbaMaoDeObra: React.FC<AbaMaoDeObraProps> = ({ idObra }) => {
   const [maoDeObraAssociada, setMaoDeObraAssociada] = useState<MaoDeObra[]>([]);
   const [showModal, setShowModal] = useState(false);
   const [showModalDelete, setShowModalDelete] = useState(false);
+  const [showModalEdicao, setShowModalEdicao] = useState(false);
   const [idSelecionado, setIdSelecionado] = useState<number | null>(null);
   const [profissional, setProfissional] = useState("");
   const [valorHora, setValorHora] = useState("");
   const [horasTrabalhadas, setHorasTrabalhadas] = useState("");
+  const [maoDeObraEditada, setMaoDeObraEditada] = useState<MaoDeObra | null>(null);
 
   useEffect(() => {
     carregarMaoDeObra();
@@ -41,8 +43,8 @@ const AbaMaoDeObra: React.FC<AbaMaoDeObraProps> = ({ idObra }) => {
 
       const payload = {
         profissional: profissional,
-        valorHora: parseFloat(valorHora),
-        horasTrabalhadas: parseFloat(horasTrabalhadas),
+        valorHora: parseInt(valorHora),
+        horasTrabalhadas: parseInt(horasTrabalhadas),
         obraId: idObra
       };
 
@@ -70,6 +72,27 @@ const AbaMaoDeObra: React.FC<AbaMaoDeObraProps> = ({ idObra }) => {
     }
   }
 
+  const handleEditar = async () => {
+    if (!maoDeObraEditada) return;
+
+    try {
+      await atualizarMaoDeObra(maoDeObraEditada.id, {
+        ...maoDeObraEditada,
+        profissional: maoDeObraEditada.profissional,
+        horasTrabalhadas: (maoDeObraEditada.horasTrabalhadas),
+        valorHora: (maoDeObraEditada.valorHora),
+        obraId: idObra
+      });
+
+      toast.success("Mão de obra atualizada com sucesso!");
+      setShowModal(false);
+      setMaoDeObraEditada(null);
+      carregarMaoDeObra();
+    } catch (error) {
+      toast.error("Erro ao atualizar mão de obra.");
+    }
+  };
+
   return (
     <div className='p-3'>
       <h4 className='mb-3'>Mão de Obra</h4>
@@ -93,9 +116,18 @@ const AbaMaoDeObra: React.FC<AbaMaoDeObraProps> = ({ idObra }) => {
               <td>{item.profissional}</td>
               <td>{item.valorHora}</td>
               <td>{item.horasTrabalhadas}</td>
-              <td>
-                <Button variant="danger" onClick={() => { setIdSelecionado(item.id); setShowModalDelete(true); }}>
+              <td className="d-flex justify-content-left gap-2">
+                <Button 
+                variant="danger" 
+                size='sm'
+                onClick={() => { setIdSelecionado(item.id); setShowModalDelete(true); }}>
                   Remover
+                </Button>
+                <Button 
+                variant="warning" 
+                size='sm'
+                onClick={() => { setMaoDeObraEditada(item); setShowModalEdicao(true); }}>
+                  Editar
                 </Button>
               </td>
             </tr>
@@ -157,6 +189,59 @@ const AbaMaoDeObra: React.FC<AbaMaoDeObraProps> = ({ idObra }) => {
           </Button>
           <Button variant="danger" onClick={() => handleRemover(idSelecionado)}>
             Remover
+          </Button>
+        </Modal.Footer>
+      </Modal>
+      { /* Modal de Edição */}
+      <Modal show={showModalEdicao} onHide={() => setShowModalEdicao(false)} centered>
+        <Modal.Header closeButton>
+          <Modal.Title>Editar Mão de Obra</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+          <Form.Group className="mb-3">
+            <Form.Label>Profissional</Form.Label>
+            <Form.Control
+              type="text"
+              value={maoDeObraEditada?.profissional || ""}
+              onChange={(e) =>
+                setMaoDeObraEditada((prev) =>
+                  prev ? { ...prev, profissional: e.target.value } : null
+                )
+              }
+            />
+          </Form.Group>
+          <Form.Group className="mb-3">
+            <Form.Label>Valor Hora</Form.Label>
+            <Form.Control
+              type="number"
+              value={maoDeObraEditada?.valorHora || ""}
+              onChange={(e) =>
+                setMaoDeObraEditada((prev) =>
+                  prev ? { ...prev, valorHora: Number(e.target.value) } : null
+                )
+              }
+            />
+          </Form.Group>
+          <Form.Group className="mb-3">
+            <Form.Label>Horas Trabalhadas</Form.Label>
+            <Form.Control
+              type="number"
+              min="1"
+              value={maoDeObraEditada?.horasTrabalhadas || ""}
+              onChange={(e) =>
+                setMaoDeObraEditada((prev) =>
+                  prev ? { ...prev, horasTrabalhadas: Number(e.target.value) } : null
+                )
+              }
+            />
+          </Form.Group>
+        </Modal.Body>
+        <Modal.Footer>
+          <Button variant="secondary" onClick={() => setMaoDeObraEditada(null)}>
+            Cancelar
+          </Button>
+          <Button variant="success" onClick={handleEditar}>
+            Atualizar
           </Button>
         </Modal.Footer>
       </Modal>

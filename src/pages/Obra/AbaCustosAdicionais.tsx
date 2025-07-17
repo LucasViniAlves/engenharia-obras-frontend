@@ -2,7 +2,7 @@ import React from "react";
 import { useState, useEffect } from "react";
 import { toast } from "react-hot-toast";
 import { CustoAdicional } from "../../types/CustoAdicional";
-import { getTodosCustoAdicional, criarCustoAdicional, deletarCustoAdicional } from "../../services/CustoAdicionalService";
+import { getTodosCustoAdicional, criarCustoAdicional, atualizarCustoAdicional, deletarCustoAdicional } from "../../services/CustoAdicionalService";
 import { Button, Form, Modal, Table } from "react-bootstrap";
 
 interface AbaCustosAdicionaisProps {
@@ -13,9 +13,11 @@ const AbaCustosAdicionais: React.FC<AbaCustosAdicionaisProps> = ({ idObra }) => 
   const [custosAdicionais, setCustosAdicionais] = useState<CustoAdicional[]>([]);
   const [showModal, setShowModal] = useState(false);
   const [showModalDelete, setShowModalDelete] = useState(false);
+  const [showModalEdicao, setShowModalEdicao] = useState(false);
   const [idSelecionado, setIdSelecionado] = useState<number | null>(null);
   const [descricao, setDescricao] = useState("");
   const [valor, setValor] = useState("");
+  const [custoAdicionalEditado, setCustoAdicionalEditado] = useState<CustoAdicional | null>(null);
 
   useEffect(() => {
     carregarCustosAdicionais();
@@ -67,6 +69,26 @@ const AbaCustosAdicionais: React.FC<AbaCustosAdicionaisProps> = ({ idObra }) => 
     }
   };
 
+  const handleEditar = async () => {
+    if (idSelecionado === null) return;
+    try {
+      const payload = {
+        descricao: descricao,
+        valor: (valor),
+        obraId: idObra
+      };
+
+      await atualizarCustoAdicional(idSelecionado, payload);
+      toast.success("Custo adicional atualizado com sucesso!");
+      setShowModal(false);
+      setIdSelecionado(null);
+      carregarCustosAdicionais();
+      setShowModalEdicao(false);
+    } catch (error) {
+      toast.error("Erro ao atualizar custo adicional.");
+    }
+  };
+
   return (
     <div className='p-3'>
       <h4 className='mb-3'>Custos Adicionais</h4>
@@ -88,9 +110,24 @@ const AbaCustosAdicionais: React.FC<AbaCustosAdicionaisProps> = ({ idObra }) => 
             <tr key={item.id}>
               <td>{item.descricao}</td>
               <td>{item.valor}</td>
-              <td>
-                <Button variant="danger" onClick={() => { setIdSelecionado(item.id); setShowModalDelete(true); }}>
+              <td className="d-flex justify-content-left gap-2">
+                <Button
+                  variant="danger"
+                  size="sm"
+                  onClick={() => { setIdSelecionado(item.id); setShowModalDelete(true); }}>
                   Remover
+                </Button>
+                <Button
+                  variant="warning"
+                  size="sm"
+                  onClick={() => {
+                    setIdSelecionado(item.id);
+                    setCustoAdicionalEditado(item);
+                    setDescricao(item.descricao);
+                    setValor(item.valor.toString());
+                    setShowModalEdicao(true);
+                  }}>
+                  Editar
                 </Button>
               </td>
             </tr>
@@ -99,7 +136,6 @@ const AbaCustosAdicionais: React.FC<AbaCustosAdicionaisProps> = ({ idObra }) => 
       </Table>
 
       {/* Modal para adicionar custo adicional */}
-
       <Modal show={showModal} onHide={() => setShowModal(false)}>
         <Modal.Header closeButton>
           <Modal.Title>Associar Custo Adicional</Modal.Title>
@@ -135,7 +171,6 @@ const AbaCustosAdicionais: React.FC<AbaCustosAdicionaisProps> = ({ idObra }) => 
           </Button>
         </Modal.Footer>
       </Modal>
-
       {/* Modal de confirmação de remoção */}
       <Modal show={showModalDelete} onHide={() => setShowModalDelete(false)} centered>
         <Modal.Header closeButton>
@@ -153,7 +188,41 @@ const AbaCustosAdicionais: React.FC<AbaCustosAdicionaisProps> = ({ idObra }) => 
           </Button>
         </Modal.Footer>
       </Modal>
-    </div>
+      {/* Modal de Edição */}
+      <Modal show={showModalEdicao} onHide={() => setShowModalEdicao(false)} centered>
+        <Modal.Header closeButton>
+          <Modal.Title>Editar Custo Adicional</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+          <Form>
+            <Form.Group className="mb-3">
+              <Form.Label>Descrição</Form.Label>
+              <Form.Control
+                type="text"
+                value={descricao}
+                onChange={(e) => setDescricao(e.target.value)}
+              />
+            </Form.Group>
+            <Form.Group className="mb-3">
+              <Form.Label>Valor</Form.Label>
+              <Form.Control
+                type="number"
+                value={valor}
+                onChange={(e) => setValor(e.target.value)}
+              />
+            </Form.Group>
+          </Form>
+        </Modal.Body>
+        <Modal.Footer>
+          <Button variant="secondary" onClick={() => setShowModalEdicao(false)}>
+            Cancelar
+          </Button>
+          <Button variant="primary" onClick={handleEditar}>
+            Atualizar
+          </Button>
+        </Modal.Footer>
+      </Modal>
+    </div >
   );
 }
 

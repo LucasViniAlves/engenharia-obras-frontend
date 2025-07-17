@@ -54,3 +54,8 @@ export const getMateriaisDaObra = async (idObra) => {
   return response.data;
 };
 
+// pegar total do custo de uma obra
+export const getTotalCustoObra = async (idObra) => {
+  const response = await api.get(`/Obra/${idObra}/total`);
+  return response.data;
+};

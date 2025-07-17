@@ -62,3 +62,10 @@
   cursor: pointer;
 }
 
+.conteudo-abas {
+  scrollbar-gutter: stable;
+  overflow-y: auto;
+  min-height: 400px; 
+  padding-right: 8px; 
+  transition: all 0.3s ease;
+}

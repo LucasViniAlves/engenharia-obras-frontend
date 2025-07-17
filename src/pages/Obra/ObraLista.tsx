@@ -40,7 +40,7 @@ export default function ObraPage() {
         <h1 className="mb-4">Selecione a obra</h1>
         <div className="row g-4">
           {obraDados.map((obra) => (
-            <div key={obra.id} className="col-12 col-sm-6 col-md-4 col-lg-3">
+            <div key={obra.id} className="col-12 col-sm-6 col-md-4">
               <ObraCard
                 obra={obra}
                 onEditar={() => handleEditar(obra)}
