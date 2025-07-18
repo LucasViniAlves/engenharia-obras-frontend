@@ -5,10 +5,9 @@ export interface Obra {
   dataInicio: string;
   dataFim?: string;
   custoEstimado: number;
-  TelefoneCliente?: string;
   emailCliente?: string;
-  IdentidadeCliente?: string;
-  NomeCliente?: string;
+  identidadeCliente?: string;
+  nomeCliente?: string;
   local?: string;
   areaTotal?: number;
   tipoObra?: string;

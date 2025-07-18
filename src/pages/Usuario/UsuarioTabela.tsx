@@ -6,6 +6,7 @@ interface Usuario {
   nome: string;
   email: string;
   senha: string;
+  perfil: string;
 }
 
 export const UsuarioTabela = ({
@@ -40,7 +41,9 @@ export const UsuarioTabela = ({
     }
   };
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleChange = (
+    e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>
+  ) => {
     if (!usuarioSelecionado) return;
     setUsuarioSelecionado({
       ...usuarioSelecionado,
@@ -55,6 +58,7 @@ export const UsuarioTabela = ({
           <tr>
             <th>Nome</th>
             <th>Email</th>
+            <th>Perfil</th>
             <th>Ações</th>
           </tr>
         </thead>
@@ -63,6 +67,7 @@ export const UsuarioTabela = ({
             <tr key={usuario.id}>
               <td>{usuario.nome}</td>
               <td>{usuario.email}</td>
+              <td>{usuario.perfil}</td>
               <td className="d-flex justify-content-left gap-2">
                 <Button
                   variant="danger"
@@ -122,6 +127,19 @@ export const UsuarioTabela = ({
                   onChange={handleChange}
                   placeholder="Digite a senha"
                 />
+              </Form.Group>
+              <Form.Group className="mb-3">
+                <Form.Label>Perfil</Form.Label>
+                <Form.Select
+                  name="perfil"
+                  value={usuarioSelecionado.perfil}
+                  onChange={handleChange}
+                >
+                  <option value="">Selecione o perfil</option>
+                  <option value="administrador">Administrador</option>
+                  <option value="proprietario">Proprietário</option>
+                  <option value="visitante">Visitante</option>
+                </Form.Select>
               </Form.Group>
             </Form>
           </Modal.Body>

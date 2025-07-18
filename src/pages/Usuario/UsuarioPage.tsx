@@ -12,6 +12,7 @@ export const UsuarioPage = () => {
     nome: "",
     email: "",
     senha: "",
+    perfil: "",
   });
   const [usuarios, setUsuarios] = useState([]);
 
@@ -23,35 +24,57 @@ export const UsuarioPage = () => {
     try {
       const resposta = await getAllUsers();
       setUsuarios(resposta);
-      console.log(resposta);
     } catch (error) {
       toast.error("Erro ao carregar usuários.");
     }
   };
 
   const handleChange = (e: { target: { name: any; value: any } }) => {
-    console.log("Mudança detectada:", e.target.name, e.target.value);
     setNovoUsuario({ ...novoUsuario, [e.target.name]: e.target.value });
   };
 
   const handleCadastrar = async () => {
-    const { nome, email, senha } = novoUsuario;
+    const { nome, email, senha, perfil } = novoUsuario;
 
-    if (!nome || !email || !senha) {
+    if (!nome || !email || !senha || !perfil) {
       toast.error("Preencha todos os campos.");
       return;
     }
 
     try {
-      await register(nome, email, senha);
+      await register(nome, email, senha, perfil);
       toast.success("Usuário cadastrado com sucesso!");
       setShowModal(false);
-      setNovoUsuario({ nome: "", email: "", senha: "" });
+      setNovoUsuario({ nome: "", email: "", senha: "", perfil: "" });
       carregarUsuarios();
     } catch (error) {
-      console.error(error);
-      toast.error("Erro ao cadastrar usuário.");
+      if (
+        typeof error === "object" &&
+        error !== null &&
+        "response" in error &&
+        typeof (error as any).response?.status === "number"
+      ) {
+        if ((error as any).response.status === 403) {
+          toast.error("Você não tem permissão para realizar esta ação.");
+        } else if ((error as any).response.status === 401) {
+          toast.error("Sessão expirada. Faça login novamente.");
+        } else {
+          toast.error("Erro ao cadastrar usuário.");
+        }
+      } else {
+        toast.error("Erro ao cadastrar usuário.");
+      }
     }
+  };
+
+  const handleEditar = (usuario: { nome: string; email: string; perfil: string; senha: string; }) => {
+    setNovoUsuario({
+      nome: usuario.nome,
+      email: usuario.email,
+      senha: usuario.senha || "",
+      perfil: usuario.perfil,
+    });
+    setShowModal(true);
   };
 
   return (
@@ -67,7 +90,7 @@ export const UsuarioPage = () => {
         <UsuarioTabela
           usuarios={usuarios}
           onDeletar={() => { }}
-          onAtualizar={() => { }}
+          onAtualizar={handleEditar}
         />
 
         {/* Modal de Cadastro */}
@@ -112,6 +135,21 @@ export const UsuarioPage = () => {
                   }
                   placeholder="Digite a senha"
                 />
+              </Form.Group>
+              <Form.Group className="mb-3">
+                <Form.Label>Perfil</Form.Label>
+                <Form.Select
+                  name="perfil"
+                  value={novoUsuario.perfil}
+                  onChange={(e) =>
+                    setNovoUsuario({ ...novoUsuario, perfil: e.target.value })
+                  }
+                >
+                  <option value="">Selecione o perfil</option>
+                  <option value="Administrador">Administrador</option>
+                  <option value="Proprietario">Proprietário</option>
+                  <option value="visitante">Visitante</option>
+                </Form.Select>
               </Form.Group>
             </Form>
           </Modal.Body>

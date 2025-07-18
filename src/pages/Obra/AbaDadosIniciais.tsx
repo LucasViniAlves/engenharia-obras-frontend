@@ -22,8 +22,8 @@ const AbaDadosIniciais: React.FC<AbaDadosIniciaisProps> = ({
     dataInicio: "",
     dataFim: "",
     custoEstimado: 0,
-    NomeCliente: "",
-    IdentidadeCliente: "",
+    nomeCliente: "",
+    identidadeCliente: "",
     emailCliente: "",
   });
 
@@ -66,6 +66,8 @@ const AbaDadosIniciais: React.FC<AbaDadosIniciaisProps> = ({
       [name]: name === "observacoes" ? value : value,
     }));
   };
+
+  console.log("Dados da obra:", obra);
 
   return (
     <div className="p-3">
@@ -131,9 +133,9 @@ const AbaDadosIniciais: React.FC<AbaDadosIniciaisProps> = ({
         <Form.Group className="mb-3">
           <Form.Label>Nome Completo</Form.Label>
           <Form.Control
-            name="NomeCliente"
+            name="nomeCliente"
             type="text"
-            value={obra.NomeCliente}
+            value={obra.nomeCliente}
             onChange={handleChange}
           />
         </Form.Group>
@@ -143,7 +145,7 @@ const AbaDadosIniciais: React.FC<AbaDadosIniciaisProps> = ({
           <Form.Control
             name="IdentidadeCliente"
             type="text"
-            value={obra.IdentidadeCliente}
+            value={obra.identidadeCliente}
             onChange={handleChange}
           />
         </Form.Group>

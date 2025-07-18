@@ -42,6 +42,9 @@ export default function HomePage() {
         {usuario && (
           <p className="lead text-secondary">Email: {usuario.email}</p>
         )}
+        {usuario && (
+          <p className="lead text-secondary">Perfil: {usuario.perfil}</p>
+        )}
 
         <hr />
 

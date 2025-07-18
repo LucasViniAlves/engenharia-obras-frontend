@@ -20,8 +20,8 @@ export default function ObraFormulario({
     dataInicio: new Date().toISOString().split("T")[0],
     dataFim: "",
     custoEstimado: 0,
-    NomeCliente: "",
-    IdentidadeCliente: "",
+    nomeCliente: "",
+    identidadeCliente: "",
     emailCliente: "",
     local: "",
     areaTotal: 0,
@@ -118,16 +118,16 @@ export default function ObraFormulario({
 
       <div className="mb-3">
         <label className="form-label">Nome do Cliente:</label>
-        <input type="text" name="NomeCliente" className="form-control" value={obra.NomeCliente} onChange={handleChange} required />
+        <input type="text" name="nomeCliente" className="form-control" value={obra.nomeCliente} onChange={handleChange} required />
       </div>
 
       <div className="mb-3">
         <label className="form-label">CPF/CNPJ:</label>
         <InputMask
-          mask={(obra.IdentidadeCliente ?? "").length > 14 ? "99.999.999/9999-99" : "999.999.999-99"}
+          mask={(obra.identidadeCliente ?? "").length > 14 ? "99.999.999/9999-99" : "999.999.999-99"}
           maskChar=""
-          name="IdentidadeCliente"
-          value={obra.IdentidadeCliente}
+          name="identidadeCliente"
+          value={obra.identidadeCliente}
           onChange={handleChange}
         >
           {(inputProps) => <input {...inputProps} type="text" className="form-control" required />}
